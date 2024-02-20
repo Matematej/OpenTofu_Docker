@@ -1,0 +1,44 @@
+Konfigurace vytvoří multi-AWS-account prostředí, ve kterém jsou jednotlivé TF State soubory ukládány do příslušných remote Backendů v příslušných AWS Účtech.
+
+    V AWS platí doporučená praxe izolovat od sebe jednotlivá prostředí. KAŽDÉ PROSTŘEDÍ by se mělo nacházet v SAMOSTATNÉM AWS ÚČTU a mělo by používat SAMOSTATNÝ TF State soubor.
+
+Předpoklady:
+    1) Nainstalujte Terraform a AWS CLI
+
+Lab:
+    1) Rozdělte jednotlivá prostředí podle funkce mezi příslušné AWS Účty.
+
+        1.1) Vytvořte IAM Uživatele s programatickým přístupem v Networking AWS Účtu a Prod AWS Účtu
+            + IAM Role
+
+        1.2) aws configure --profile=Networking-profile 
+             aws configure --profile=Prod-profile 
+
+    2)  Ve všech AWS Účtech:
+            terraform init
+            terraform plan
+            terraform apply
+
+    3) Přesuňte lokální TF State do remote Backend 
+         
+         3.1) Nahraďte jméno bucketu a DynamoDB table za output v terminálu
+
+         3.2) Odkomentujte /* */ v Networking\backend.tf a Prod\backend.tf::
+
+                    backend "s3" {
+                        bucket = "<jméno vašeho bucketu>"
+                        key = "State/terraform.tfstate"
+                        region= "us-east-2"
+                        dynamodb_table = "<jméno vašeho DynamoDB table>"
+                        encrypt        = true
+                        profile = "Backend-profile"
+                    } 
+
+    4)  Ve všech AWS Účtech:
+            terraform init (vytvoření remote Backend)
+
+    5)  Ve všech AWS Účtech:
+            terraform destroy
+
+(Prostředí lze dále rozdělovat např. pomocí VCS Branches, Terragrunt nebo TF Workspaces)
+(TF State soubory je možné ukládat také centrálně)
