@@ -1,15 +1,14 @@
-# Get official hashicorp image that has terraform installed
-# FROM chainguard/opentofu:latest
-# FROM hashicorp/terraform:latest
-# FROM nginx
-
+# Get official opentofu image that has terraform installed
 FROM ghcr.io/opentofu/opentofu:latest
+
 # Create directory for Terraform files
 RUN mkdir -p /opentofu
 
 # Copy tf files from the local into the container
 COPY provider.tf /opentofu/provider.tf
-COPY open_tofu_lab /opentofu/open_tofu_lab
+COPY open_tofu_lab/Lab#1_VPC/* /opentofu/
+#COPY open_tofu_lab/Lab#2_Backend/* /opentofu/
+#COPY open_tofu_lab/Lab#3_Prostředí/* /opentofu/
 
 # Copy entrypoint script
 COPY entrypoint.sh /opentofu/entrypoint.sh

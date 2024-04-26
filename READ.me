@@ -1,10 +1,39 @@
-(docker run -e AWS_ACCESS_KEY_ID=<> -e AWS_SECRET_ACCESS_KEY=<> -it terraform-course)
+# Terraform Course Lab Deployment with Docker
 
-docker build --tag opentofu_lab .
+In this project, we use a containerized Docker environment to deploy the Terraform course lab. Using containers ensures a portable and consistent environment across different platforms.
 
-docker run --rm -v /host/path:/terraform/state --name opentofu-container opentofu_lab init
+## Prerequisites
+- Docker installed
 
+## How to run
 
-docker exec -it opentofu-container ls 
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/Matematej/OpenTofu_Docker.git
+   cd Conteinerized_ENV_for_Terraform
+   ```
 
-The only way it makes sence is that docker run --rm -v /host/path:/terraform/state --name opentofu-container opentofu_lab init will work, and I have somehow not seen the provider.tf inside of /opentofu directory. Docker should be able to find the main.tf files automatically.
+2. **Build Docker Image**
+   ```bash
+   docker build --tag opentofu_lab .
+   ```
+
+3. **Initialize Terraform**
+   ```bash
+   docker run --rm -v "$(pwd):/root/.aws" -v /host/path:/terraform/state --name opentofu-container opentofu_lab init
+   ```
+
+4. **Plan Infrastructure Changes**
+   ```bash
+   docker run --rm -v "$(pwd):/root/.aws" -v /host/path:/terraform/state --name opentofu-container opentofu_lab plan
+   ```
+
+5. **Apply Infrastructure Changes**
+   ```bash
+   docker run --rm -v "$(pwd):/root/.aws" -v /host/path:/terraform/state --name opentofu-container opentofu_lab apply
+   ```
+
+6. **Destroy Infrastructure**
+   ```bash
+   docker run --rm -v "$(pwd):/root/.aws" -v /host/path:/terraform/state --name opentofu-container opentofu_lab destroy
+   ```
